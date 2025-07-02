@@ -9,36 +9,36 @@ let tasks: Task[] = [
     title: 'Test 1',
     description: 'Test Description',
     completed: false,
-    createdAt: '2025-07-02T01:12:41.417Z' as unknown as Date,
+    createdAt: '2025-07-02T01:12:41.417Z' as unknown as Date
   },
   {
     id: '5248a5c0-057b-44a6-b5c4-7c2790362d26',
     title: 'Test 2',
     description: 'Test Description',
     completed: true,
-    createdAt: '2025-07-02T01:12:42.088Z' as unknown as Date,
+    createdAt: '2025-07-02T01:12:42.088Z' as unknown as Date
   },
   {
     id: 'f5a33b0f-19bf-4e8d-a4c8-826d120d69e7',
     title: 'Test 3',
     description: 'Test Description',
     completed: false,
-    createdAt: '2025-07-02T01:12:42.753Z' as unknown as Date,
+    createdAt: '2025-07-02T01:12:42.753Z' as unknown as Date
   },
   {
     id: 'e1039a63-8215-47db-bf64-cb77297aebaa',
     title: 'Test 4',
     description: 'Test Description',
     completed: false,
-    createdAt: '2025-07-02T01:12:43.408Z' as unknown as Date,
+    createdAt: '2025-07-02T01:12:43.408Z' as unknown as Date
   },
   {
     id: 'cd4601c8-02c9-4c98-a9da-75f9ffd6d67b',
     title: 'Test 5',
     description: 'Test Description',
     completed: true,
-    createdAt: '2025-07-02T01:12:44.077Z' as unknown as Date,
-  },
+    createdAt: '2025-07-02T01:12:44.077Z' as unknown as Date
+  }
 ];
 
 export const getAllTasks = (req: Request, res: Response) => {
@@ -52,7 +52,7 @@ export const createTask = (req: Request, res: Response) => {
     title,
     description,
     completed: false,
-    createdAt: new Date(),
+    createdAt: new Date()
   };
   tasks.push(newTask);
   res.status(201).json(newTask);
@@ -69,7 +69,8 @@ export const getTaskById = (req: Request, res: Response) => {
 export const updateTask = (req: Request, res: Response) => {
   const taskIndex = tasks.findIndex((t) => t.id === req.params.id);
   if (taskIndex === -1) {
-    res.status(404).json({ message: 'Task not found.' });
+    res.status(404).send({ message: 'Task not found.' });
+    return;
   }
   const updatedTask = { ...tasks[taskIndex], ...req.body };
   tasks[taskIndex] = updatedTask;

@@ -6,7 +6,7 @@ import {
   updateTask,
   deleteTask,
   getCompletedTasks,
-  getIncompleteTasks,
+  getIncompleteTasks
 } from '../controllers/taskController';
 import { validateTask } from '../middleware/validationMiddleware';
 

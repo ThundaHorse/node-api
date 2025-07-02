@@ -9,7 +9,6 @@ import countryRoutes from './routes/countryRoutes';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerOptions from './swaggerOptions';
-import swaggerSpec from './swaggerOptions';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -22,21 +21,21 @@ app.use(
     useDefaults: true,
     directives: {
       defaultSrc: ["'self'", "'unsafe-inline'", 'localhost'],
-      scriptSrc: ["'self'", "'unsafe-inline'", 'https://cdnjs.cloudflare.com'],
+      scriptSrc: ["'self'", "'unsafe-inline'", 'https://cdnjs.cloudflare.com/'],
     },
   })
 );
-app.use(cors());
-app.use(compression());
-app.use(express.json());
 app.use(statusMonitor());
+app.use(compression());
+app.use(cors());
+app.use(express.json());
 
 // --- Routes ---
-app.use('/tasks', taskRoutes);
-app.use('/countries', countryRoutes);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.use('/v1/tasks', taskRoutes);
+app.use('/v1/countries', countryRoutes);
+app.use('/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
-  console.log(`Swagger UI available at http://localhost:${PORT}/api-docs`);
+  console.log(`Swagger UI available at http://localhost:${PORT}/v1/api-docs`);
 });
