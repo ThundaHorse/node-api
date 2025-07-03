@@ -118,6 +118,90 @@ const swaggerOptions: Options = {
           }
         }
       },
+      '/v1/tasks/completed': {
+        get: {
+          operationId: 'CompletedTasks',
+          tags: ['tasks'],
+          responses: {
+            '200': {
+              description: 'Successfully retrieved all completed tasks',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'array',
+                    maxItems: 255,
+                    items: {
+                      $ref: '#/components/schemas/Task'
+                    }
+                  }
+                }
+              }
+            },
+            '400': {
+              description: 'Not found',
+              content: {
+                'application/json': {
+                  schema: {
+                    $ref: '#/components/schemas/NotFound'
+                  }
+                }
+              }
+            },
+            '404': {
+              description: 'Not found',
+              content: {
+                'application/json': {
+                  schema: {
+                    $ref: '#/components/schemas/NotFound'
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      '/v1/tasks/incomplete': {
+        get: {
+          operationId: 'IncompleteTasks',
+          tags: ['tasks'],
+          responses: {
+            '200': {
+              description: 'Successfully retrieved all incomplete tasks',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'array',
+                    maxItems: 255,
+                    items: {
+                      $ref: '#/components/schemas/Task'
+                    }
+                  }
+                }
+              }
+            },
+            '400': {
+              description: 'Not found',
+              content: {
+                'application/json': {
+                  schema: {
+                    $ref: '#/components/schemas/NotFound'
+                  }
+                }
+              }
+            },
+            '404': {
+              description: 'Not found',
+              content: {
+                'application/json': {
+                  schema: {
+                    $ref: '#/components/schemas/NotFound'
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       '/v1/tasks/{:getTaskId}': {
         get: {
           operationId: 'GetTask',

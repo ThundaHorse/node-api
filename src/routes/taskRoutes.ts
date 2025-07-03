@@ -1,20 +1,21 @@
 import { Router } from 'express';
-import {
-  getAllTasks,
-  createTask,
-  getTaskById,
-  updateTask,
-  deleteTask,
-  getCompletedTasks,
-  getIncompleteTasks
-} from '../controllers/taskController';
+import TaskController from '../controllers/taskController';
 import { validateTask } from '../middleware/validationMiddleware';
 
 const taskRouter = Router();
+const {
+  getAll,
+  createTask,
+  getCompleted,
+  getIncomplete,
+  getById,
+  updateTask,
+  deleteTask
+} = TaskController.generateAllMethods();
 
-taskRouter.route('/').get(getAllTasks).post(validateTask, createTask);
-taskRouter.route('/completed').get(getCompletedTasks);
-taskRouter.route('/incomplete').get(getIncompleteTasks);
-taskRouter.route('/:id').get(getTaskById).patch(updateTask).delete(deleteTask);
+taskRouter.route('/').get(getAll).post(validateTask, createTask);
+taskRouter.route('/completed').get(getCompleted);
+taskRouter.route('/incomplete').get(getIncomplete);
+taskRouter.route('/:id').get(getById).patch(updateTask).delete(deleteTask);
 
 export default taskRouter;

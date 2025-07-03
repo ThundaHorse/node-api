@@ -1,4 +1,7 @@
-import { RawCountryData, TransformedCountry } from './types';
+import { RawCountryData, TransformedCountry } from '../util/types';
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
+// Create MCP client
+import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 
 const API_URL =
   'https://restcountries.com/v3.1/all?fields=name,region,languages,flags,population';
@@ -10,7 +13,7 @@ const transformCountryData = (country: RawCountryData): TransformedCountry => {
     region: country.region,
     population: country.population,
     languages: country.languages ? Object.values(country.languages) : [],
-    flagUrl: country.flags.svg,
+    flagUrl: country.flags.svg
   };
 };
 
@@ -57,3 +60,30 @@ export const getProcessedCountryByName = async (
     );
   }
 };
+
+export const testReddit = async () => {};
+
+const config = {
+  port: 8000,
+  redditClientId: 'Wt5kX53XRaPLz2yHdz6k2Q',
+  redditClientSecret: 'hirdI2FbYnws0_id-i6RRc1ofquYDQ'
+};
+const serverUrl = 'https://server.smithery.ai/@GridfireAI/reddit-mcp';
+
+const transport = new StreamableHTTPClientTransport(
+  serverUrl as unknown as any
+);
+
+const client = new Client({
+  name: 'My App',
+  version: '1.0.0'
+});
+
+async function initializeClient() {
+  await client.connect(transport);
+
+  // List available tools
+  const tools: any = await client.listTools();
+  console.log(`Available tools: ${tools.map((t: any) => t.name).join(', ')}`);
+}
+initializeClient();
