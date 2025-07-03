@@ -1,102 +1,59 @@
-import { Request, Response } from 'express';
-import { v4 as uuidv4 } from 'uuid';
-import { Task } from '../types';
+import { ControllerGenerator } from '../util/controller.generator';
+import { Task } from '../util/types';
+import { tasks } from '../config/tempDatabase';
+import { TraceService } from '../util/TraceService';
 
-// In-memory store
-let tasks: Task[] = [
-  {
-    id: 'b38e05de-ff0e-453a-801b-1f5f2bb4bf6f',
-    title: 'Test 1',
-    description: 'Test Description',
-    completed: false,
-    createdAt: '2025-07-02T01:12:41.417Z' as unknown as Date
-  },
-  {
-    id: '5248a5c0-057b-44a6-b5c4-7c2790362d26',
-    title: 'Test 2',
-    description: 'Test Description',
-    completed: true,
-    createdAt: '2025-07-02T01:12:42.088Z' as unknown as Date
-  },
-  {
-    id: 'f5a33b0f-19bf-4e8d-a4c8-826d120d69e7',
-    title: 'Test 3',
-    description: 'Test Description',
-    completed: false,
-    createdAt: '2025-07-02T01:12:42.753Z' as unknown as Date
-  },
-  {
-    id: 'e1039a63-8215-47db-bf64-cb77297aebaa',
-    title: 'Test 4',
-    description: 'Test Description',
-    completed: false,
-    createdAt: '2025-07-02T01:12:43.408Z' as unknown as Date
-  },
-  {
-    id: 'cd4601c8-02c9-4c98-a9da-75f9ffd6d67b',
-    title: 'Test 5',
-    description: 'Test Description',
-    completed: true,
-    createdAt: '2025-07-02T01:12:44.077Z' as unknown as Date
+/**
+ * @description TaskController class to handle CRUD operations for tasks.
+ * It uses ControllerGenerator to create methods for task management.
+ * * @class TaskController
+ * @extends ControllerGenerator<Task>
+ * @param {TraceService} tracerService - The tracing service instance for OpenTelemetry.
+ * @example
+ * const taskController = new TaskController(TraceService.getInstance());
+ */
+class TaskController extends ControllerGenerator<Task> {
+  /**
+   * @description Creates a new instance of TaskController.
+   * @param {TraceService} tracerService - The tracing service instance for OpenTelemetry.
+   */
+  private readonly generator: ControllerGenerator<Task>;
+
+  /**
+   * @description Initializes the TaskController with a ControllerGenerator for tasks.
+   * @param {TraceService} tracerService - The tracing service instance for OpenTelemetry.
+   */
+  // constructor(tracerService: TraceService) {
+  //   this.generator = new ControllerGenerator<Task>(
+  //     'tasks',
+  //     tasks,
+  //     tracerService
+  //   );
+  // }
+  constructor(tracerService: TraceService) {
+    super('tasks', tasks, tracerService);
+    this.generator = new ControllerGenerator<Task>(
+      'tasks',
+      tasks,
+      tracerService
+    );
   }
-];
 
-export const getAllTasks = (req: Request, res: Response) => {
-  res.status(200).json(tasks);
-};
-
-export const createTask = (req: Request, res: Response) => {
-  const { title, description } = req.body;
-  const newTask: Task = {
-    id: uuidv4(),
-    title,
-    description,
-    completed: false,
-    createdAt: new Date()
-  };
-  tasks.push(newTask);
-  res.status(201).json(newTask);
-};
-
-export const getTaskById = (req: Request, res: Response) => {
-  const task = tasks.find((t) => t.id === req.params.id);
-  if (!task) {
-    res.status(404).json({ message: 'Task not found.' });
+  /**
+   * @description Generates all CRUD methods for task management.
+   * @returns {Object} An object containing all generated methods.
+   */
+  public generateAllMethods() {
+    return {
+      getAll: this.generator.generateGetAll(),
+      getById: this.generator.generateGetById(),
+      createTask: this.generator.generateCreate(),
+      updateTask: this.generator.generateUpdate(),
+      deleteTask: this.generator.generateDelete(),
+      getCompleted: this.generator.generateCompletedTasks(),
+      getIncomplete: this.generator.generateIncompleteTasks()
+    };
   }
-  res.status(200).json(task);
-};
+}
 
-export const updateTask = (req: Request, res: Response) => {
-  const taskIndex = tasks.findIndex((t) => t.id === req.params.id);
-  if (taskIndex === -1) {
-    res.status(404).send({ message: 'Task not found.' });
-    return;
-  }
-  const updatedTask = { ...tasks[taskIndex], ...req.body };
-  tasks[taskIndex] = updatedTask;
-  res.status(200).json(updatedTask);
-};
-
-export const deleteTask = (req: Request, res: Response) => {
-  const task = tasks.findIndex((val) => val.id === req.params.id);
-
-  if (task === -1) {
-    res.status(404).json({ message: 'Task not found.' });
-  } else {
-    tasks.splice(task, 1);
-
-    res
-      .status(200)
-      .send({ message: `Task ${req.params.id} removed successfully` });
-  }
-};
-
-export const getCompletedTasks = (req: Request, res: Response) => {
-  const completedTasks = tasks.filter((t) => t.completed === true);
-  res.status(200).json(completedTasks);
-};
-
-export const getIncompleteTasks = (req: Request, res: Response) => {
-  const completedTasks = tasks.filter((t) => t.completed === false);
-  res.status(200).json(completedTasks);
-};
+export default new TaskController(TraceService.getInstance());

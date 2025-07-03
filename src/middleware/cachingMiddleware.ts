@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { getCache } from '../cache';
-import { TransformedCountry } from '../types';
+import { getCache } from '../util/cache';
+import { TransformedCountry } from '../util/types';
 
 const CACHE_KEY_COUNTRIES = 'all-countries';
 
